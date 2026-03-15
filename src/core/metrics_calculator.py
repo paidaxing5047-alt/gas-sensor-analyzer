@@ -1,5 +1,9 @@
 import numpy as np
 
+# Metrics displayed on the radar/spider comparison chart.
+# Must be a subset of the keys returned by MetricsCalculator.calculate().
+RADAR_METRICS = ["响应值(%)", "响应时间(s)", "恢复时间(s)", "稳定性(方差)", "灵敏度(%/ppm)"]
+
 
 class MetricsCalculator:
     """Compute gas-sensor performance metrics for a single measurement row."""

@@ -35,7 +35,8 @@ def create_app():
         template_folder=os.path.join(os.path.dirname(__file__), "..", "..", "templates"),
         static_folder=os.path.join(os.path.dirname(__file__), "..", "..", "static"),
     )
-    app.config["MAX_CONTENT_LENGTH"] = 50 * 1024 * 1024  # 50 MB
+    MAX_UPLOAD_SIZE_MB = 50
+    app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_SIZE_MB * 1024 * 1024
     app.config["UPLOADED_DATA"] = []
 
     calculator = MetricsCalculator()

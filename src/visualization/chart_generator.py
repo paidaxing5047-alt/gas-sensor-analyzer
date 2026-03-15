@@ -3,6 +3,8 @@ import numpy as np
 import plotly.graph_objects as go
 import plotly.utils
 
+from src.core.metrics_calculator import RADAR_METRICS
+
 
 def _fig_to_json(fig):
     """Serialize a Plotly figure to JSON string."""
@@ -221,12 +223,11 @@ def radar_chart(data):
         return _fig_to_json(go.Figure())
 
     from collections import defaultdict
-    METRICS = ["响应值(%)", "响应时间(s)", "恢复时间(s)", "稳定性(方差)", "灵敏度(%/ppm)"]
     mat_metrics = defaultdict(lambda: defaultdict(list))
     for row in data:
         mat = row.get("material", "未知")
         m = row.get("metrics", {})
-        for key in METRICS:
+        for key in RADAR_METRICS:
             v = m.get(key)
             if v is not None:
                 mat_metrics[mat][key].append(abs(v))
@@ -238,18 +239,18 @@ def radar_chart(data):
 
     # Normalize each metric 0-1 across materials
     norm_vals = {}
-    for key in METRICS:
+    for key in RADAR_METRICS:
         vals = [mat_avgs[m].get(key, 0) for m in mat_avgs]
         max_v = max(vals) if vals else 1
         max_v = max_v if max_v != 0 else 1
         for mat in mat_avgs:
             norm_vals.setdefault(mat, {})[key] = mat_avgs[mat].get(key, 0) / max_v
 
-    categories = METRICS + [METRICS[0]]  # close the loop
+    categories = RADAR_METRICS + [RADAR_METRICS[0]]  # close the loop
     colors = ["#2196F3", "#F44336", "#4CAF50", "#FF9800", "#9C27B0"]
     fig = go.Figure()
     for i, (mat, nv) in enumerate(norm_vals.items()):
-        values = [nv.get(k, 0) for k in METRICS] + [nv.get(METRICS[0], 0)]
+        values = [nv.get(k, 0) for k in RADAR_METRICS] + [nv.get(RADAR_METRICS[0], 0)]
         fig.add_trace(go.Scatterpolar(
             r=values, theta=categories,
             fill="toself", name=mat,
