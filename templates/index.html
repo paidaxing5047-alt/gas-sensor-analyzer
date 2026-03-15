@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>气体传感器数据分析软件</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <span class="logo">🧪</span>
+      <div>
+        <h1>气体传感器数据分析软件</h1>
+        <p class="subtitle">Gas Sensor Data Analyzer v1.0</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ===== Upload Section ===== -->
+    <section class="card upload-section" id="uploadSection">
+      <h2>📁 数据导入</h2>
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-icon">📊</div>
+        <p class="drop-text">拖放 Excel 文件到此处，或点击选择文件</p>
+        <p class="drop-hint">支持 .xlsx / .xls 格式，工作表名：测量数据 &nbsp;|&nbsp; 最大 50 MB</p>
+        <input type="file" id="fileInput" accept=".xlsx,.xls" hidden />
+        <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">选择文件</button>
+      </div>
+      <div id="uploadStatus" class="upload-status hidden"></div>
+    </section>
+
+    <!-- ===== Results Section (hidden until data loaded) ===== -->
+    <section id="resultsSection" class="hidden">
+
+      <!-- Summary bar -->
+      <div class="card summary-bar">
+        <div class="summary-item">
+          <span class="summary-label">测量条数</span>
+          <span class="summary-value" id="totalRows">0</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">材料数</span>
+          <span class="summary-value" id="totalMaterials">0</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">气体种类</span>
+          <span class="summary-value" id="totalGases">0</span>
+        </div>
+        <div class="summary-actions">
+          <button class="btn btn-outline" onclick="exportCSV()">⬇ 导出 CSV</button>
+          <button class="btn btn-outline" onclick="exportReport()">📄 导出报告</button>
+        </div>
+      </div>
+
+      <!-- Metrics Table -->
+      <div class="card">
+        <h2>📋 测量指标汇总</h2>
+        <div class="table-wrapper">
+          <table id="metricsTable">
+            <thead id="metricsHead"></thead>
+            <tbody id="metricsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Charts Section -->
+      <div class="card">
+        <h2>📈 数据可视化</h2>
+
+        <!-- Tab bar -->
+        <div class="tab-bar" id="chartTabs">
+          <button class="tab-btn active" data-chart="response" data-label="响应曲线">响应曲线</button>
+          <button class="tab-btn" data-chart="sensitivity" data-label="灵敏度曲线">灵敏度曲线</button>
+          <button class="tab-btn" data-chart="selectivity" data-label="选择性">选择性</button>
+          <button class="tab-btn" data-chart="temperature" data-label="温度影响">温度影响</button>
+          <button class="tab-btn" data-chart="humidity" data-label="湿度影响">湿度影响</button>
+          <button class="tab-btn" data-chart="radar" data-label="材料对比">材料对比</button>
+        </div>
+
+        <!-- Response curve row selector -->
+        <div id="rowSelectorWrapper" class="row-selector-wrapper">
+          <label for="rowSelector">选择测量行：</label>
+          <select id="rowSelector" onchange="loadChart('response')"></select>
+        </div>
+
+        <!-- Chart container -->
+        <div id="chartContainer" class="chart-container">
+          <div class="chart-placeholder">← 选择上方选项卡查看图表</div>
+        </div>
+        <div id="chartLoading" class="chart-loading hidden">加载中…</div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>气体传感器数据分析软件 &copy; 2024 &nbsp;|&nbsp; 基于 Flask + Plotly</p>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
