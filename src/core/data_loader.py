@@ -21,6 +21,7 @@ def load_excel(filepath):
         df = xl.parse(xl.sheet_names[0])
 
     # Identify time columns: columns whose name matches digits followed by 's'
+    # Expected format: '0s', '1s', '2s', ..., '300s' (integer seconds, lowercase 's' suffix)
     time_col_pattern = re.compile(r"^\d+s$")
     time_cols = [c for c in df.columns if time_col_pattern.match(str(c))]
     time_points = np.array([int(str(c).rstrip("s")) for c in time_cols])
